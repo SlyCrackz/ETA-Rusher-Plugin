@@ -1,0 +1,49 @@
+# EtaCommand Plugin for RusherHack
+
+EtaCommand is a Minecraft plugin for the RusherHack client that allows players to set a destination and receive periodic notifications about the estimated time of arrival (ETA) based on their current speed.
+
+## Commands
+
+### `*eta set <x> <z>`
+Sets the destination coordinates.
+
+**Example:**
+*eta set 1000 500*
+
+Output:
+Destination set to (§a1000§r, §a500§r).
+
+### `*eta`
+Displays the current ETA to the set destination.
+
+**Example:**
+*eta*
+
+Output:
+ETA: §a1§r hours, §a30§r minutes
+
+### `*eta stop`
+Stops the ETA calculation and notifications.
+
+**Example:**
+*eta stop*
+
+Output:
+ETA calculation stopped.
+
+### `*eta setInterval <interval>`
+Sets the interval for ETA notifications in seconds. Set to 0 to turn off notifications.
+
+**Example:**
+*eta setInterval 60*
+
+Output:
+Notification interval set to 60 seconds.
+
+**Example to turn off notifications:**
+*eta setInterval 0*
+
+Output:
+Notifications turned off.
+
+
