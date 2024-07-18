@@ -27,7 +27,7 @@ public class EtaCommand extends Command implements Globals {
     private ScheduledExecutorService scheduler;
     private final INotificationManager notificationManager;
     private final ReentrantLock lock = new ReentrantLock();
-    private int notificationInterval = 30;
+    private int notificationInterval = 0; // Default notification interval to 0
 
     public EtaCommand() {
         super("eta", "Sets destination and calculates ETA");
@@ -37,7 +37,11 @@ public class EtaCommand extends Command implements Globals {
     private void startETAScheduler() {
         scheduler = Executors.newScheduledThreadPool(1);
 
+        // Speed update every 50ms
         scheduler.scheduleAtFixedRate(this::updateSpeed, 0, 50, TimeUnit.MILLISECONDS);
+
+        // HUD update every second (1000ms)
+        scheduler.scheduleAtFixedRate(this::updateHUD, 0, 1000, TimeUnit.MILLISECONDS);
 
         if (notificationInterval > 0) {
             scheduler.scheduleAtFixedRate(() -> {
@@ -47,6 +51,9 @@ public class EtaCommand extends Command implements Globals {
                 }
             }, notificationInterval, notificationInterval, TimeUnit.SECONDS);
         }
+    }
+
+    private void updateHUD() {
     }
 
     @CommandExecutor(subCommand = "set")
@@ -122,14 +129,41 @@ public class EtaCommand extends Command implements Globals {
         return "Notification interval set.";
     }
 
-    private String calculateETA() {
+    public String calculateETA() {
         if (!destinationSet) {
-            return "No destination set.";
+            return "";
         }
+
+        if (currentSpeed < 0.01) {
+            return "ETA: N/A";
+        }
+
         assert mc.player != null;
-        double distance = Math.sqrt(Math.pow(destinationX - mc.player.getX(), 2) +
-                Math.pow(destinationZ - mc.player.getZ(), 2));
-        double eta = distance / currentSpeed;
+        double playerX = mc.player.getX();
+        double playerZ = mc.player.getZ();
+        double distance = Math.sqrt(Math.pow(destinationX - playerX, 2) + Math.pow(destinationZ - playerZ, 2));
+
+        // Calculate the direction vector to the destination
+        double directionX = destinationX - playerX;
+        double directionZ = destinationZ - playerZ;
+        double directionMagnitude = Math.sqrt(directionX * directionX + directionZ * directionZ);
+        directionX /= directionMagnitude;
+        directionZ /= directionMagnitude;
+
+        // Calculate the player's movement vector
+        double movementX = playerX - lastX;
+        double movementZ = playerZ - lastZ;
+        double movementMagnitude = Math.sqrt(movementX * movementX + movementZ * movementZ);
+        movementX /= movementMagnitude;
+        movementZ /= movementMagnitude;
+
+        // Calculate the dot product to check if moving towards or away from the destination
+        double dotProduct = (directionX * movementX) + (directionZ * movementZ);
+        if (dotProduct < 0) {
+            currentSpeed = -currentSpeed; // Moving away from the destination
+        }
+
+        double eta = distance / Math.abs(currentSpeed);
 
         long hours = (long) eta / 3600;
         long minutes = ((long) eta % 3600) / 60;
@@ -160,8 +194,7 @@ public class EtaCommand extends Command implements Globals {
             }
             speedMeasurements.add(newSpeed);
 
-            double alpha = 0.1;
-            currentSpeed = alpha * newSpeed + (1 - alpha) * (speedMeasurements.stream().mapToDouble(Double::doubleValue).average().orElse(newSpeed));
+            currentSpeed = speedMeasurements.stream().mapToDouble(Double::doubleValue).average().orElse(newSpeed);
 
             lastUpdateTime = currentTime;
             lastX = currentX;
@@ -170,4 +203,5 @@ public class EtaCommand extends Command implements Globals {
             lock.unlock();
         }
     }
+
 }
