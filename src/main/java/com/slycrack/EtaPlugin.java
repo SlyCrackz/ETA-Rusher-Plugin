@@ -15,6 +15,9 @@ public class EtaPlugin extends Plugin {
         final EtaCommand etaCommand = new EtaCommand();
         RusherHackAPI.getCommandManager().registerFeature(etaCommand);
 
+        final EtaHud etaHud = new EtaHud(etaCommand);
+        RusherHackAPI.getHudManager().registerFeature(etaHud);
+
     }
 
     @Override
