@@ -7,6 +7,8 @@ import org.rusherhack.client.api.render.font.IFontRenderer;
 public class EtaHud extends TextHudElement {
 
     private final EtaCommand etaCommand;
+    private long lastUpdateTime = 0;
+    private String cachedText = "";
 
     public EtaHud(EtaCommand etaCommand) {
         super("EtaHud");
@@ -15,25 +17,40 @@ public class EtaHud extends TextHudElement {
 
     @Override
     public String getText() {
-        return etaCommand.calculateETA();
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastUpdateTime > 1000) { // Update every second
+            cachedText = etaCommand.calculateETA();
+            lastUpdateTime = currentTime;
+        }
+        return cachedText;
     }
 
     @Override
     public double getWidth() {
-        return getFontRenderer().getStringWidth(getText()) + PADDING * 2;
+        String text = getText();
+        if (text.isEmpty()) {
+            return 0;
+        }
+        return getFontRenderer().getStringWidth(text) + PADDING * 2;
     }
 
     @Override
     public double getHeight() {
+        String text = getText();
+        if (text.isEmpty()) {
+            return 0;
+        }
         return getFontRenderer().getFontHeight() + PADDING * 2;
     }
 
     @Override
     public void renderContent(RenderContext context, double mouseX, double mouseY) {
-        IFontRenderer fontRenderer = getFontRenderer();
         String text = getText();
-        double x = PADDING;
-        double y = PADDING;
-        fontRenderer.drawString(text, x, y, 0xFFFFFFFF, true);
+        if (!text.isEmpty()) {
+            IFontRenderer fontRenderer = getFontRenderer();
+            double x = PADDING;
+            double y = PADDING;
+            fontRenderer.drawString(text, x, y, 0xFFFFFFFF, true);
+        }
     }
 }
