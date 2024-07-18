@@ -1,0 +1,12 @@
+{
+  "Plugin-Class": "com.slycrack.EtaPlugin",
+  "Name": "ETA",
+  "Version": "${plugin_version}",
+  "Description": "eta rusherhack plugin",
+  "Authors": [
+    "slycrack"
+  ],
+  "Minecraft-Versions": [
+    "1.20.4"
+  ]
+}
