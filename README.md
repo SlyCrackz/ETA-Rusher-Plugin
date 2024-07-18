@@ -11,7 +11,7 @@ Sets the destination coordinates.
 *eta set 1000 500*
 
 Output:
-Destination set to (§a1000§r, §a500§r).
+Destination set to (1000, 500).
 
 ### `*eta`
 Displays the current ETA to the set destination.
@@ -20,7 +20,7 @@ Displays the current ETA to the set destination.
 *eta*
 
 Output:
-ETA: §a1§r hours, §a30§r minutes
+ETA: 1 hours, 30 minutes
 
 ### `*eta stop`
 Stops the ETA calculation and notifications.
