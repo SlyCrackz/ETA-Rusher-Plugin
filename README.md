@@ -22,6 +22,12 @@ Stops the ETA calculation and notifications.
 Output:
 ETA calculation stopped.
 
+### `*eta eta`
+Shows the eta.
+
+**Example:**
+*eta eta*
+
 ### `*eta setInterval <interval>`
 Sets the interval for ETA notifications in seconds. Set to 0 to turn off notifications.
 
