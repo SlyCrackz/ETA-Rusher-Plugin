@@ -13,15 +13,6 @@ Sets the destination coordinates.
 Output:
 Destination set to (1000, 500).
 
-### `*eta`
-Displays the current ETA to the set destination.
-
-**Example:**
-*eta*
-
-Output:
-ETA: 1 hours, 30 minutes
-
 ### `*eta stop`
 Stops the ETA calculation and notifications.
 
