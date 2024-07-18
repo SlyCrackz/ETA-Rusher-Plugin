@@ -2,6 +2,8 @@
 
 ETA is a plugin for the Rusher client that allows players to set a destination and receive periodic notifications about the estimated time of arrival (ETA) based on their current speed and direction.
 
+It also has a HUD!
+
 ## Commands
 
 ### `*eta set <x> <z>`
